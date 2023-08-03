@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fullstack_todo_app/screens/auth_screen.dart';
+import 'package:fullstack_todo_app/screens/splash_screen.dart';
 import 'package:fullstack_todo_app/screens/start_screen.dart';
 
 void main() {
@@ -20,7 +22,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        '/': (context) => const StartScreen(),
+        '/': (context) => const SplashScreen(),
+        '/startscreen': (context) => const StartScreen(),
+        '/authscreen': (context) => const AuthScreen(),
       },
       initialRoute: '/',
     );
