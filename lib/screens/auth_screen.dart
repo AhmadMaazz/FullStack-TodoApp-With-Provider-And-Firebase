@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../widgets/rps_custompainter.dart';
+
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
@@ -11,45 +13,69 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   File? _selectedImage;
 
   void _showImagePickerDialog() {
     showModalBottomSheet<void>(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       context: context,
       builder: (BuildContext context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Take a Photo'),
-              onTap: () async {
-                Navigator.pop(context);
-                final image = await ImagePicker().pickImage(
-                  source: ImageSource.camera,
-                );
-                if (image != null) {
-                  setState(() {
-                    _selectedImage = File(image.path);
-                  });
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 15.0,
+                left: 8.0,
+                right: 8.0,
+                bottom: 5,
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Take a Photo'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final image = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                  );
+                  if (image != null) {
+                    setState(() {
+                      _selectedImage = File(image.path);
+                    });
+                  }
+                },
+              ),
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
-              onTap: () async {
-                Navigator.pop(context);
+            const Divider(
+              indent: 30,
+              endIndent: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 5.0,
+                left: 8.0,
+                right: 8.0,
+                bottom: 20,
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(context);
 
-                final image = await ImagePicker().pickImage(
-                  source: ImageSource.gallery,
-                );
-                if (image != null) {
-                  setState(() {
-                    _selectedImage = File(image.path);
-                  });
-                }
-              },
+                  final image = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (image != null) {
+                    setState(() {
+                      _selectedImage = File(image.path);
+                    });
+                  }
+                },
+              ),
             ),
           ],
         );
@@ -62,95 +88,171 @@ class _AuthScreenState extends State<AuthScreen> {
     Size size = MediaQuery.sizeOf(context);
     double textSize = MediaQuery.textScaleFactorOf(context);
     return Scaffold(
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              SizedBox(
-                width: size.width,
-                height: size.height * 0.17,
-                child: CustomPaint(
-                  size: Size(
-                      size.width,
-                      (size.width * 0.2833333333333334)
-                          .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-                  painter: RPSCustomPainter(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  width: size.width,
+                  height: size.height * 0.17,
+                  child: CustomPaint(
+                    size: Size(
+                        size.width,
+                        (size.width * 0.2833333333333334)
+                            .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                    painter: RPSCustomPainter(),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: textSize * 100),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: _showImagePickerDialog,
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.grey,
-                      child: _selectedImage != null
-                          ? CircleAvatar(
-                              radius: 60,
-                              backgroundImage: FileImage(_selectedImage!),
-                            )
-                          : const Icon(
-                              Icons.camera_alt,
-                              size: 60,
-                              color: Colors.white,
-                            ),
+                Padding(
+                  padding: EdgeInsets.only(top: textSize * 100),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: _showImagePickerDialog,
+                      child: CircleAvatar(
+                        radius: 63,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: Colors.grey,
+                          child: _selectedImage != null
+                              ? CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage: FileImage(_selectedImage!),
+                                )
+                              : const Icon(
+                                  Icons.camera_alt,
+                                  size: 60,
+                                  color: Colors.white,
+                                ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                'profile photo',
+                style: TextStyle(
+                    fontSize: textSize * 20,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Urbanist'),
               ),
-            ],
-          ),
-        ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 40,
+              ),
+              child: TextField(
+                cursorColor: Theme.of(context).colorScheme.secondary,
+                controller: _fullNameController,
+                decoration: inputDecorationStyle(context),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 40,
+              ),
+              child: TextField(
+                cursorColor: Theme.of(context).colorScheme.secondary,
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: inputDecorationStyle(context),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 40,
+              ),
+              child: TextField(
+                cursorColor: Theme.of(context).colorScheme.secondary,
+                controller: _passwordController,
+                obscureText: true,
+                decoration: inputDecorationStyle(context),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    // Handle Google login
+                  },
+                  child: Image.asset(
+                    'assets/images/google.png', // Replace with your Google icon asset path
+                    width: 50,
+                    height: 50,
+                  ),
+                ),
+                const VerticalDivider(
+                  color: Colors.grey,
+                  width: 20,
+                  thickness: 1, // Increase thickness
+                  indent: 20,
+                  endIndent: 0,
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  color: Colors.grey.withOpacity(0.4),
+                  width: 3,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Handle Facebook login
+                  },
+                  child: Image.asset(
+                    'assets/images/facebook.png', // Replace with your Facebook icon asset path
+                    width: 50,
+                    height: 50,
+                  ),
+                ),
+                const SizedBox(width: 10),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
-}
 
-class RPSCustomPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Layer 1
-
-    Paint paintFill0 = Paint()
-      ..color = const Color(0xffBBF0BC)
-      ..style = PaintingStyle.fill
-      ..strokeWidth = size.width * 0.00
-      ..strokeCap = StrokeCap.butt
-      ..strokeJoin = StrokeJoin.miter;
-
-    Path path_0 = Path();
-    path_0.moveTo(size.width * 0, size.height * 0);
-    path_0.lineTo(size.width * 0, size.height * 0.9285714);
-    path_0.lineTo(size.width * 0.2086667, size.height * 0.9294286);
-    path_0.lineTo(size.width * 0.2921667, size.height * 0.8571429);
-    path_0.lineTo(size.width * 0.3751667, size.height * 0.9294286);
-    path_0.lineTo(size.width * 0.4173333, size.height * 0.9291429);
-    path_0.lineTo(size.width * 0.5007250, size.height * 0.8576143);
-    path_0.lineTo(size.width * 0.5833333, size.height * 0.9294286);
-    path_0.lineTo(size.width * 0.6253333, size.height * 0.9294286);
-    path_0.lineTo(size.width * 0.7085000, size.height * 0.8520000);
-    path_0.lineTo(size.width * 0.7921667, size.height * 0.9288571);
-    path_0.lineTo(size.width * 1, size.height * 0.9285714);
-    path_0.lineTo(size.width * 1, size.height * 0);
-
-    canvas.drawPath(path_0, paintFill0);
-
-    // Layer 1
-
-    Paint paintStroke0 = Paint()
-      ..color = const Color.fromARGB(255, 187, 240, 188)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.00
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    canvas.drawPath(path_0, paintStroke0);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  InputDecoration inputDecorationStyle(BuildContext context) {
+    return InputDecoration(
+      labelText: 'Full Name',
+      labelStyle: const TextStyle(
+        fontFamily: 'Urbanist',
+        fontWeight: FontWeight.w500,
+      ),
+      floatingLabelStyle: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontFamily: 'Urbanist',
+          fontWeight: FontWeight.w600),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).primaryColor,
+          width: 3.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).primaryColor,
+          width: 3.0,
+        ),
+        borderRadius: BorderRadius.circular(7.0),
+      ),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      filled: true,
+      hintText: 'Enter your full name',
+    );
   }
 }
