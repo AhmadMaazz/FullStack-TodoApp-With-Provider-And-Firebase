@@ -44,9 +44,13 @@ class _SplashScreenState extends State<SplashScreen> {
             ], // Stops for the colors, ranging from 0.0 to 1.0
           ),
         ),
-        child: Lottie.asset(
-          'assets/animation/animation_lkvkmkg2.json',
-          
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Lottie.asset(
+            'assets/animation/animation_lkvkmkg2.json',
+            width: 220,
+            height: 220,
+          ),
         ),
       ),
     );

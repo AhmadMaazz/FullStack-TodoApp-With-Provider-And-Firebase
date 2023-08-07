@@ -24,7 +24,7 @@ class StartScreen extends StatelessWidget {
             height: size.height * 0.09,
           ),
           Padding(
-            padding: EdgeInsets.only(left: textSize * 15),
+            padding: EdgeInsets.only(left: textSize * 25),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -43,7 +43,7 @@ class StartScreen extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(
-              left: textSize * 15,
+              left: textSize * 25,
               right: textSize * 65,
             ),
             child: Align(
