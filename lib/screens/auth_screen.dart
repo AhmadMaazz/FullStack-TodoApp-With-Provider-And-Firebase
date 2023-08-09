@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../widgets/my_button.dart';
 import '../widgets/rps_custompainter.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   File? _selectedImage;
+  bool _isPasswordVisible = false;
 
   void _showImagePickerDialog() {
     showModalBottomSheet<void>(
@@ -90,6 +92,7 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Stack(
               children: [
@@ -111,19 +114,19 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: GestureDetector(
                       onTap: _showImagePickerDialog,
                       child: CircleAvatar(
-                        radius: 63,
+                        radius: 53,
                         backgroundColor: Theme.of(context).primaryColor,
                         child: CircleAvatar(
-                          radius: 60,
+                          radius: 50,
                           backgroundColor: Colors.grey,
                           child: _selectedImage != null
                               ? CircleAvatar(
-                                  radius: 60,
+                                  radius: 50,
                                   backgroundImage: FileImage(_selectedImage!),
                                 )
                               : const Icon(
                                   Icons.camera_alt,
-                                  size: 60,
+                                  size: 50,
                                   color: Colors.white,
                                 ),
                         ),
@@ -145,88 +148,153 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
+                vertical: 10.0,
                 horizontal: 40,
               ),
               child: TextField(
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 controller: _fullNameController,
-                decoration: inputDecorationStyle(context),
+                decoration: inputDecorationStyle(
+                    context, 'Full Name', 'Enter your full name'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
+                vertical: 10.0,
                 horizontal: 40,
               ),
               child: TextField(
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: inputDecorationStyle(context),
+                decoration: inputDecorationStyle(
+                    context, 'Email Address', 'Enter your email address'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
+                vertical: 10.0,
                 horizontal: 40,
               ),
               child: TextField(
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 controller: _passwordController,
-                obscureText: true,
-                decoration: inputDecorationStyle(context),
+                obscureText: !_isPasswordVisible,
+                onChanged: (value) {
+                  setState(() {
+                    _isPasswordVisible =
+                        value.isNotEmpty ? _isPasswordVisible : false;
+                  });
+                },
+                decoration: inputDecorationStylePassword(
+                    context, 'Password', 'Enter your password'),
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () {
-                    // Handle Google login
-                  },
-                  child: Image.asset(
-                    'assets/images/google.png', // Replace with your Google icon asset path
-                    width: 50,
-                    height: 50,
-                  ),
-                ),
-                const VerticalDivider(
-                  color: Colors.grey,
-                  width: 20,
-                  thickness: 1, // Increase thickness
-                  indent: 20,
-                  endIndent: 0,
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  color: Colors.grey.withOpacity(0.4),
-                  width: 3,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    // Handle Facebook login
-                  },
-                  child: Image.asset(
-                    'assets/images/facebook.png', // Replace with your Facebook icon asset path
-                    width: 50,
-                    height: 50,
-                  ),
-                ),
-                const SizedBox(width: 10),
-              ],
+            Text(
+              'sign in with',
+              style: TextStyle(
+                  fontSize: textSize * 15,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Urbanist'),
             ),
+            const SizedBox(height: 20),
+            IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const SizedBox(width: 10),
+                  GestureDetector(
+                    onTap: () {
+                      // Handle Google login
+                    },
+                    child: Image.asset(
+                      'assets/images/google.png', // Replace with your Google icon asset path
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                  const VerticalDivider(
+                    // color: Colors.grey,
+                    width: 60,
+                    indent: 6,
+                    endIndent: 6,
+                    thickness: 1, // Increase thickness
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // Handle Facebook login
+                    },
+                    child: Image.asset(
+                      'assets/images/facebook.png', // Replace with your Facebook icon asset path
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            MyButton(
+              textSize: textSize,
+              width: size.width * 0.85,
+              height: size.height * 0.07,
+              title: 'Create Your Profile',
+            ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: textSize * 68),
+              child: ListTile(
+                title: Text(
+                  'have an account?',
+                  style: TextStyle(
+                      fontSize: textSize * 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Urbanist'),
+                ),
+                trailing: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'log in',
+                    style: TextStyle(
+                      fontSize: textSize * 16,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Urbanist',
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.only(left: textSize * 30.0, top: textSize * 15),
+              child: Text.rich(
+                TextSpan(
+                  text: 'By continuing, you agree to our ',
+                  children: [
+                    TextSpan(
+                      text: 'Terms, Community Guidelines & Privacy Policy',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  InputDecoration inputDecorationStyle(BuildContext context) {
+  InputDecoration inputDecorationStyle(
+      BuildContext context, String title, String hinttext) {
     return InputDecoration(
-      labelText: 'Full Name',
+      labelText: title,
       labelStyle: const TextStyle(
         fontFamily: 'Urbanist',
         fontWeight: FontWeight.w500,
@@ -238,21 +306,65 @@ class _AuthScreenState extends State<AuthScreen> {
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: Theme.of(context).primaryColor,
-          width: 3.0,
+          width: 1.0,
         ),
         borderRadius: BorderRadius.circular(12.0),
       ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: Theme.of(context).primaryColor,
-          width: 3.0,
+          width: 1.0,
         ),
         borderRadius: BorderRadius.circular(7.0),
       ),
       contentPadding:
           const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       filled: true,
-      hintText: 'Enter your full name',
+      hintText: hinttext,
+    );
+  }
+
+  InputDecoration inputDecorationStylePassword(
+      BuildContext context, String title, String hinttext) {
+    return InputDecoration(
+      labelText: title,
+      labelStyle: const TextStyle(
+        fontFamily: 'Urbanist',
+        fontWeight: FontWeight.w500,
+      ),
+      floatingLabelStyle: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontFamily: 'Urbanist',
+          fontWeight: FontWeight.w600),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).primaryColor,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).primaryColor,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(7.0),
+      ),
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      filled: true,
+      hintText: hinttext,
+      suffixIcon: _passwordController.text.isNotEmpty
+          ? IconButton(
+              icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
+                setState(() {
+                  _isPasswordVisible = !_isPasswordVisible;
+                });
+              },
+            )
+          : null,
     );
   }
 }
