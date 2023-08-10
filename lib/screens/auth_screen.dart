@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fullstack_todo_app/decorations/textfield_decoration.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../widgets/my_button.dart';
@@ -154,7 +155,7 @@ class _AuthScreenState extends State<AuthScreen> {
               child: TextField(
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 controller: _fullNameController,
-                decoration: inputDecorationStyle(
+                decoration: TextFieldDecorations().inputDecorationStyle(
                     context, 'Full Name', 'Enter your full name'),
               ),
             ),
@@ -167,7 +168,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: inputDecorationStyle(
+                decoration: TextFieldDecorations().inputDecorationStyle(
                     context, 'Email Address', 'Enter your email address'),
               ),
             ),
@@ -241,6 +242,9 @@ class _AuthScreenState extends State<AuthScreen> {
               width: size.width * 0.85,
               height: size.height * 0.07,
               title: 'Create Your Profile',
+              navigation: () {
+                Navigator.pushReplacementNamed(context, '/homescreen');
+              },
             ),
             const SizedBox(height: 15),
             Padding(
@@ -254,7 +258,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       fontFamily: 'Urbanist'),
                 ),
                 trailing: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/loginscreen');
+                  },
                   child: Text(
                     'log in',
                     style: TextStyle(
@@ -288,39 +294,6 @@ class _AuthScreenState extends State<AuthScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  InputDecoration inputDecorationStyle(
-      BuildContext context, String title, String hinttext) {
-    return InputDecoration(
-      labelText: title,
-      labelStyle: const TextStyle(
-        fontFamily: 'Urbanist',
-        fontWeight: FontWeight.w500,
-      ),
-      floatingLabelStyle: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontFamily: 'Urbanist',
-          fontWeight: FontWeight.w600),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Theme.of(context).primaryColor,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Theme.of(context).primaryColor,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(7.0),
-      ),
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-      filled: true,
-      hintText: hinttext,
     );
   }
 

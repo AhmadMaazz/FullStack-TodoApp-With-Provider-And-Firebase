@@ -6,9 +6,9 @@ class MyButton extends StatelessWidget {
     required this.textSize,
     required this.width,
     required this.height,
-    required this.title,
+    required this.title, required this.navigation,
   });
-
+  final VoidCallback navigation;
   final double width;
   final double height;
   final double textSize;
@@ -17,9 +17,7 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, '/authscreen');
-      },
+      onTap: navigation,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),

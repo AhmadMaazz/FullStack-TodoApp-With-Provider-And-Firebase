@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/screens/auth_screen.dart';
+import 'package:fullstack_todo_app/screens/home_screen.dart';
+import 'package:fullstack_todo_app/screens/login_screen.dart';
 import 'package:fullstack_todo_app/screens/splash_screen.dart';
 import 'package:fullstack_todo_app/screens/start_screen.dart';
 
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/startscreen': (context) => const StartScreen(),
         '/authscreen': (context) => const AuthScreen(),
+        '/loginscreen': (context) => const LogInScreen(),
+        '/homescreen': (context) => const HomeScreen(),
       },
       initialRoute: '/',
     );
