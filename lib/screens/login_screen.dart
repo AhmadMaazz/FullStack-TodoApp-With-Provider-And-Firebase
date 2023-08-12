@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/decorations/textfield_decoration.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../widgets/my_button.dart';
 import '../widgets/rps_custompainter.dart';
+import '../firebase/firebase.utils.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -17,6 +19,20 @@ class _LogInScreenState extends State<LogInScreen> {
   final TextEditingController _passwordControllerLogin =
       TextEditingController();
   bool _isPasswordVisibleLogin = false;
+  String? errorMessage = '';
+
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+        email: _emailControllerLogin.text.toString(),
+        password: _passwordControllerLogin.text.toString(),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,32 +43,16 @@ class _LogInScreenState extends State<LogInScreen> {
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Stack(
-              children: [
-                SizedBox(
-                  width: size.width,
-                  height: size.height * 0.17,
-                  child: CustomPaint(
-                    size: Size(
-                        size.width,
-                        (size.width * 0.2833333333333334)
-                            .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-                    painter: RPSCustomPainter(),
-                  ),
-                ),
-                Positioned(
-                  top: 60,
-                  left: 8,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_rounded,
-                    ),
-                  ),
-                )
-              ],
+            SizedBox(
+              width: size.width,
+              height: size.height * 0.17,
+              child: CustomPaint(
+                size: Size(
+                    size.width,
+                    (size.width * 0.2833333333333334)
+                        .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                painter: RPSCustomPainter(),
+              ),
             ),
             SizedBox(height: size.height * 0.01),
             Padding(
@@ -102,7 +102,18 @@ class _LogInScreenState extends State<LogInScreen> {
             ),
             SizedBox(height: size.height * 0.05),
             MyButton(
-              navigation: () {
+              navigation: () async {
+                if (_emailControllerLogin.text.isEmpty ||
+                    _passwordControllerLogin.text.isEmpty) {
+                  // Show a snackbar or some other feedback to indicate validation error
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Please fill in all fields."),
+                    ),
+                  );
+                  return; // Prevent navigation
+                }
+                await signInWithEmailAndPassword();
                 Navigator.pushReplacementNamed(context, '/homescreen');
               },
               textSize: textSize,

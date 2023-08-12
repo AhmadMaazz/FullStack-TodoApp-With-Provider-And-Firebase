@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/decorations/textfield_decoration.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../firebase/firebase.utils.dart';
 import '../widgets/my_button.dart';
 import '../widgets/rps_custompainter.dart';
 
@@ -20,6 +22,20 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _passwordController = TextEditingController();
   File? _selectedImage;
   bool _isPasswordVisible = false;
+  String? errorMessage = '';
+
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      await Auth().createUserWithEmailAndPassword(
+        email: _emailController.text.toString(),
+        password: _passwordController.text.toString(),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
 
   void _showImagePickerDialog() {
     showModalBottomSheet<void>(
@@ -242,7 +258,19 @@ class _AuthScreenState extends State<AuthScreen> {
               width: size.width * 0.85,
               height: size.height * 0.07,
               title: 'Create Your Profile',
-              navigation: () {
+              navigation: () async {
+                if (_emailController.text.isEmpty ||
+                    _passwordController.text.isEmpty ||
+                    _fullNameController.text.isEmpty) {
+                  // Show a snackbar or some other feedback to indicate validation error
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Please fill in all fields."),
+                    ),
+                  );
+                  return; // Prevent navigation
+                }
+                await createUserWithEmailAndPassword();
                 Navigator.pushReplacementNamed(context, '/homescreen');
               },
             ),

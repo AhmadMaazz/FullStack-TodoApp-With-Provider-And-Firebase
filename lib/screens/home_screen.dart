@@ -1,7 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fullstack_todo_app/firebase/firebase.utils.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final User? user = Auth().currentUser;
+
+  Future<void> signOut(BuildContext context) async {
+    await Auth().signOut();
+    Navigator.pushReplacementNamed(context, '/authscreen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,33 +18,43 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('User Profile'),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(20.0),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Email: ',
-              style: TextStyle(
+              user?.email ?? 'User email',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'User ID: ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'User Name: ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+              ),
+              onPressed: () {
+                signOut(context);
+              },
+              child: const Text('sign out'),
             ),
           ],
         ),

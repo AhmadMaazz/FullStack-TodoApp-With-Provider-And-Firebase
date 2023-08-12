@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/screens/auth_screen.dart';
 import 'package:fullstack_todo_app/screens/home_screen.dart';
@@ -5,7 +6,9 @@ import 'package:fullstack_todo_app/screens/login_screen.dart';
 import 'package:fullstack_todo_app/screens/splash_screen.dart';
 import 'package:fullstack_todo_app/screens/start_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
         '/startscreen': (context) => const StartScreen(),
         '/authscreen': (context) => const AuthScreen(),
         '/loginscreen': (context) => const LogInScreen(),
-        '/homescreen': (context) => const HomeScreen(),
+        '/homescreen': (context) =>  HomeScreen(),
       },
       initialRoute: '/',
     );
