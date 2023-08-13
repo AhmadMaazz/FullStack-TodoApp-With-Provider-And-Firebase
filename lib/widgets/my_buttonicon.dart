@@ -15,7 +15,7 @@ class MyButtonIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/authscreen');
+        Navigator.pushNamed(context, '/authstatechecker');
       },
       child: Container(
         decoration: BoxDecoration(
