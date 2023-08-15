@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -222,8 +224,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 children: [
                   const SizedBox(width: 10),
                   GestureDetector(
-                    onTap: () {
-                      // Handle Google login
+                    onTap: () async {
+                      await Auth().signInWithGoogle();
+                      Navigator.pushNamed(context, '/homescreen');
                     },
                     child: Image.asset(
                       'assets/images/google.png', // Replace with your Google icon asset path
@@ -239,7 +242,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     thickness: 1, // Increase thickness
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: ()  {
+                      // await Auth().signInWithFacebook();
+                      // Navigator.pushNamed(context, '/homescreen');
                       // Handle Facebook login
                     },
                     child: Image.asset(
@@ -271,7 +276,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   return; // Prevent navigation
                 }
                 await createUserWithEmailAndPassword();
-                Navigator.pushReplacementNamed(context, '/homescreen');
+                // Navigator.pushReplacementNamed(context, '/homescreen');
               },
             ),
             const SizedBox(height: 15),

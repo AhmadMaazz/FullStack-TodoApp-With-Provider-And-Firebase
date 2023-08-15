@@ -9,6 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> signOut(BuildContext context) async {
     await Auth().signOut();
+    await Auth().signOutGoogle();
     Navigator.pushReplacementNamed(context, '/authscreen');
   }
 
