@@ -43,16 +43,30 @@ class _LogInScreenState extends State<LogInScreen> {
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: size.width,
-              height: size.height * 0.17,
-              child: CustomPaint(
-                size: Size(
-                    size.width,
-                    (size.width * 0.2833333333333334)
-                        .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-                painter: RPSCustomPainter(),
-              ),
+            Stack(
+              children: [
+                SizedBox(
+                  width: size.width,
+                  height: size.height * 0.17,
+                  child: CustomPaint(
+                    size: Size(
+                        size.width,
+                        (size.width * 0.2833333333333334)
+                            .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                    painter: RPSCustomPainter(),
+                  ),
+                ),
+                Positioned(
+                  left: 5,
+                  top: 60,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back_rounded),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: size.height * 0.01),
             Padding(
@@ -114,7 +128,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   return; // Prevent navigation
                 }
                 await signInWithEmailAndPassword();
-                Navigator.pushReplacementNamed(context, '/homescreen');
+                if (context.mounted) Navigator.pushReplacementNamed(context, '/homescreen');
               },
               textSize: textSize,
               width: size.width * 0.85,

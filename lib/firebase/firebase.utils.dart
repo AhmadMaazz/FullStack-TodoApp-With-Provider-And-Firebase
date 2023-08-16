@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class Auth extends ChangeNotifier{
+class Auth extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -23,11 +24,25 @@ class Auth extends ChangeNotifier{
   Future<void> createUserWithEmailAndPassword({
     required String email,
     required String password,
+    required String username,
   }) async {
-    await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? user = currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'email': email,
+          'username': username,
+        });
+      }
+    } catch (e) {
+      debugPrint('Error creating user: $e');
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {
@@ -38,8 +53,6 @@ class Auth extends ChangeNotifier{
     await _googleSignIn.signOut();
     await _firebaseAuth.signOut();
   }
-
-  
 
   Future<UserCredential> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -52,8 +65,17 @@ class Auth extends ChangeNotifier{
       idToken: googleAuth?.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
 
-  
+    final User user = userCredential.user!;
+    final String username = user.displayName ?? '';
+
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      'email': user.email,
+      'username': username,
+    });
+
+    return userCredential;
+  }
 }

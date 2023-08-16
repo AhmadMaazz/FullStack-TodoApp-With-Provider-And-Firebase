@@ -7,10 +7,9 @@ class HomeScreen extends StatelessWidget {
 
   final User? user = Auth().currentUser;
 
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOut() async {
     await Auth().signOut();
     await Auth().signOutGoogle();
-    Navigator.pushReplacementNamed(context, '/authscreen');
   }
 
   @override
@@ -52,8 +51,9 @@ class HomeScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
               ),
-              onPressed: () {
-                signOut(context);
+              onPressed: () async {
+                await signOut();
+                if (context.mounted) Navigator.pop(context);
               },
               child: const Text('sign out'),
             ),
