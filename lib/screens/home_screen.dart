@@ -129,9 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: const Icon(Icons.home),
                 title: const Text('D A S H B O A R D'),
                 onTap: () {}),
-            const ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('L O G O U T'),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('L O G O U T'),
+              onTap: () => Navigator.pushNamed(context, '/logoutscreen'),
             ),
             const ListTile(
               leading: Icon(Icons.info),

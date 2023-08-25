@@ -5,8 +5,10 @@ import 'package:fullstack_todo_app/screens/addtask_screen.dart';
 import 'package:fullstack_todo_app/screens/auth_screen.dart';
 import 'package:fullstack_todo_app/screens/home_screen.dart';
 import 'package:fullstack_todo_app/screens/login_screen.dart';
+import 'package:fullstack_todo_app/screens/logout_screen.dart';
 import 'package:fullstack_todo_app/screens/splash_screen.dart';
 import 'package:fullstack_todo_app/screens/start_screen.dart';
+import 'package:fullstack_todo_app/screens/taskdetails_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         '/loginscreen': (context) => const LogInScreen(),
         '/homescreen': (context) => const HomeScreen(),
         '/addtaskscreen': (context) => const AddTaskScreen(),
+        '/tastdetailscreen': (context) => const TaskDetailScreen(),
+        '/logoutscreen': (context) => const LogoutScreen(),
       },
       initialRoute: '/',
     );
