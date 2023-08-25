@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/contexts/user.context.dart';
+import 'package:fullstack_todo_app/screens/addtask_screen.dart';
 import 'package:fullstack_todo_app/screens/auth_screen.dart';
 import 'package:fullstack_todo_app/screens/home_screen.dart';
 import 'package:fullstack_todo_app/screens/login_screen.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         '/authstatechecker': (context) => const AuthStateChecker(),
         '/authscreen': (context) => const AuthScreen(),
         '/loginscreen': (context) => const LogInScreen(),
-        '/homescreen': (context) => HomeScreen(),
+        '/homescreen': (context) => const HomeScreen(),
+        '/addtaskscreen': (context) => const AddTaskScreen(),
       },
       initialRoute: '/',
     );

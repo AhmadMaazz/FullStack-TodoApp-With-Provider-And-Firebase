@@ -17,7 +17,7 @@ class _AuthStateCheckerState extends State<AuthStateChecker> {
       stream: Auth().authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return HomeScreen();
+          return const HomeScreen();
         } else {
           return const AuthScreen();
         }

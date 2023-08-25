@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/firebase/firebase.utils.dart';
 import 'package:fullstack_todo_app/widgets/rps_custompainter.dart';
 
+import '../widgets/my_task.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -24,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double textSize = MediaQuery.textScaleFactorOf(context);
     return Scaffold(
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
@@ -42,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Positioned(
                 left: size.width * 0.25,
                 right: size.width * 0.2,
-                top: size.height * 0.06,
+                top: size.height * 0.07,
                 child: ListTile(
                   leading: const CircleAvatar(
                     backgroundColor: Colors.pink,
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Positioned(
-                top: 50, // Adjust the top position as needed
+                top: size.height * 0.075, // Adjust the top position as needed
                 left: 10, // Adjust the left position as needed
                 child: Builder(
                   // Wrap the IconButton with a Builder widget
@@ -67,24 +69,54 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          Text(
-            user?.email ?? 'User email',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: textSize * 15,
+                vertical: textSize * 25,
+              ),
+              child: Text(
+                'Today Tasks:',
+                style: TextStyle(
+                  fontSize: textSize * 20,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-            ),
-            onPressed: () async {
-              await signOut();
-              if (context.mounted) Navigator.pop(context);
-            },
-            child: const Text('sign out'),
-          ),
+          MyTasks(size: size),
+          MyTasks(size: size),
+          MyTasks(size: size),
         ],
+      ),
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, '/addtaskscreen');
+        },
+        child: Container(
+          width: 60, // Set the width and height to make it circular
+          height: 60,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: const Alignment(-1.0, -1.0),
+              end: const Alignment(1.0, 1.0),
+              colors: [
+                const Color(0xffEFBBD3),
+                Theme.of(context).colorScheme.secondary,
+              ], // Specify the colors you want for the gradient
+              // You can also add stops to control the color distribution
+              stops: const [
+                0.2,
+                1
+              ], // Stops for the colors, ranging from 0.0 to 1.0
+            ),
+          ),
+          child: const Icon(Icons.add),
+        ),
       ),
       drawer: Drawer(
         backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -111,3 +143,23 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
+
+// Text(
+//             user?.email ?? 'User email',
+//             style: const TextStyle(
+//               fontSize: 18,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//           ElevatedButton(
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: Colors.orange,
+//             ),
+//             onPressed: () async {
+//               await signOut();
+//               if (context.mounted) Navigator.pop(context);
+//             },
+//             child: const Text('sign out'),
+//           ),
