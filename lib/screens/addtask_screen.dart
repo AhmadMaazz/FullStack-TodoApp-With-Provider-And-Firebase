@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fullstack_todo_app/models/todo.dart';
+import 'package:fullstack_todo_app/provider/todo_provider.dart';
 import 'package:fullstack_todo_app/widgets/my_button.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../decorations/textfield_decoration.dart';
 import '../widgets/rps_custompainter.dart';
@@ -13,7 +17,21 @@ class AddTaskScreen extends StatefulWidget {
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _taskName = TextEditingController();
-  final TextEditingController _tastDescription = TextEditingController();
+  final TextEditingController _taskDescription = TextEditingController();
+
+  void _createNewTask() {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+     final now = DateTime.now();
+    final formattedTime = DateFormat.jm().format(now);
+    final newTodo = Todo(
+      taskName: _taskName.text,
+      description: _taskDescription.text,
+      creationTime: formattedTime.toString(),
+    );
+    todoProvider.addTodo(newTodo);
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -111,7 +129,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ),
             child: TextField(
               cursorColor: Theme.of(context).colorScheme.secondary,
-              controller: _tastDescription,
+              controller: _taskDescription,
               keyboardType: TextInputType.text,
               minLines: 3,
               maxLines: 5,
@@ -125,13 +143,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           Align(
             alignment: Alignment.center,
             child: MyButton(
-              textSize: textSize,
-              width: size.width * 0.85,
-              height: size.height * 0.08,
-              title: 'Create a New Task',
-              navigation: () =>
-                  Navigator.popAndPushNamed(context, '/homescreen'),
-            ),
+                textSize: textSize,
+                width: size.width * 0.85,
+                height: size.height * 0.08,
+                title: 'Create a New Task',
+                navigation: () {
+                  _createNewTask();
+                  Navigator.popAndPushNamed(context, '/homescreen');
+                }),
           ),
         ],
       ),

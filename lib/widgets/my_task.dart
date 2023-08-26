@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:fullstack_todo_app/models/todo.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/todo_provider.dart';
 
 class MyTasks extends StatelessWidget {
   const MyTasks({
     super.key,
     required this.size,
+    required this.todos,
+    required this.index,
   });
 
   final Size size;
+  final List<Todo> todos;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    final todo = todos[index];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Container(
@@ -39,12 +49,20 @@ class MyTasks extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: ListTile(
-              leading: Checkbox(value: false, onChanged: (_) {}),
-              title: const Text('Going to the gym'),
-              subtitle: const Text('9:08 pm'),
+              leading: Checkbox(
+                value: todo.isCompleted,
+                onChanged: (_) {
+                  todoProvider.toggleTodoCompletion(index);
+                },
+              ),
+              title: Text(todoProvider.todos[index].taskName),
+              subtitle: Text(
+                todoProvider.todos[index].creationTime,
+              ),
               trailing: IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/tastdetailscreen');
+                  // Navigator.pushNamed(context, '/tastdetailscreen');
+                  todoProvider.removeTodo(index);
                 },
                 icon: const Icon(Icons.movie_edit),
               ),

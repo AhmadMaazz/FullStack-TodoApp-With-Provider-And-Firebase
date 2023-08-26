@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/contexts/user.context.dart';
+import 'package:fullstack_todo_app/provider/todo_provider.dart';
 import 'package:fullstack_todo_app/screens/addtask_screen.dart';
 import 'package:fullstack_todo_app/screens/auth_screen.dart';
 import 'package:fullstack_todo_app/screens/home_screen.dart';
@@ -9,11 +10,17 @@ import 'package:fullstack_todo_app/screens/logout_screen.dart';
 import 'package:fullstack_todo_app/screens/splash_screen.dart';
 import 'package:fullstack_todo_app/screens/start_screen.dart';
 import 'package:fullstack_todo_app/screens/taskdetails_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => TodoProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

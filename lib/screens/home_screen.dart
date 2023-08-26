@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/firebase/firebase.utils.dart';
+import 'package:fullstack_todo_app/provider/todo_provider.dart';
 import 'package:fullstack_todo_app/widgets/rps_custompainter.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/my_task.dart';
 
@@ -15,13 +17,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final User? user = Auth().currentUser;
 
-  Future<void> signOut() async {
-    await Auth().signOut();
-    await Auth().signOutGoogle();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final todoProvider = Provider.of<TodoProvider>(context);
     Size size = MediaQuery.sizeOf(context);
     double textSize = MediaQuery.textScaleFactorOf(context);
     return Scaffold(
@@ -87,9 +85,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          MyTasks(size: size),
-          MyTasks(size: size),
-          MyTasks(size: size),
+          for (int index = 0; index < todoProvider.todos.length; index++)
+            MyTasks(
+              size: size,
+              todos: todoProvider.todos,
+              index: index,
+            ),
         ],
       ),
       floatingActionButton: GestureDetector(
