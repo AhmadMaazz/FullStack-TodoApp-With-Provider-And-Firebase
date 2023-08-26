@@ -20,4 +20,17 @@ class TodoProvider extends ChangeNotifier {
     _todos[index].isCompleted = !_todos[index].isCompleted;
     notifyListeners();
   }
+
+  void updateTask(Todo todo, String newTaskName, String newTaskDescription) {
+    final index = _todos.indexOf(todo);
+    if (index != -1) {
+      _todos[index] = Todo(
+        taskName: newTaskName,
+        description: newTaskDescription,
+        creationTime: todo.creationTime,
+        isCompleted: todo.isCompleted,
+      );
+      notifyListeners();
+    }
+  }
 }

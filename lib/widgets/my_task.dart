@@ -3,6 +3,7 @@ import 'package:fullstack_todo_app/models/todo.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/todo_provider.dart';
+import '../screens/taskdetails_screen.dart';
 
 class MyTasks extends StatelessWidget {
   const MyTasks({
@@ -55,14 +56,30 @@ class MyTasks extends StatelessWidget {
                   todoProvider.toggleTodoCompletion(index);
                 },
               ),
-              title: Text(todoProvider.todos[index].taskName),
+              title: Text(
+                todoProvider.todos[index].taskName,
+                style: TextStyle(
+                  decoration: todoProvider.todos[index].isCompleted
+                      ? TextDecoration.lineThrough
+                      : null,
+                ),
+              ),
               subtitle: Text(
                 todoProvider.todos[index].creationTime,
               ),
               trailing: IconButton(
                 onPressed: () {
                   // Navigator.pushNamed(context, '/tastdetailscreen');
-                  todoProvider.removeTodo(index);
+                  // todoProvider.removeTodo(index);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TaskDetailScreen(
+                        todo: todo,
+                        index: index,
+                      ),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.movie_edit),
               ),

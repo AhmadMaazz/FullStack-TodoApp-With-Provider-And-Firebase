@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:fullstack_todo_app/models/todo.dart';
+import 'package:fullstack_todo_app/widgets/my_button.dart';
+import 'package:provider/provider.dart';
 
+import '../decorations/textfield_decoration.dart';
+import '../provider/todo_provider.dart';
 import '../widgets/rps_custompainter.dart';
 
-class TaskDetailScreen extends StatelessWidget {
-  const TaskDetailScreen({super.key});
+class TaskDetailScreen extends StatefulWidget {
+  final Todo todo;
+  final int index;
+  const TaskDetailScreen({super.key, required this.todo, required this.index});
+
+  @override
+  State<TaskDetailScreen> createState() => _TaskDetailScreenState();
+}
+
+class _TaskDetailScreenState extends State<TaskDetailScreen> {
+  TextEditingController _taskNameController = TextEditingController();
+  TextEditingController _taskDescriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _taskNameController.text = widget.todo.taskName;
+    _taskDescriptionController.text = widget.todo.description;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +73,107 @@ class TaskDetailScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
+            child: Text(
+              'Task name',
+              style: TextStyle(
+                fontSize: textSize * 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 30,
+            ),
+            child: TextField(
+              cursorColor: Theme.of(context).colorScheme.secondary,
+              controller: _taskNameController,
+              keyboardType: TextInputType.name,
+              decoration: TextFieldDecorations()
+                  .inputDecorationStyle(context, '', 'Enter your Task Name'),
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
+            child: Text(
+              'Task description',
+              style: TextStyle(
+                fontSize: textSize * 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 30,
+            ),
+            child: TextField(
+              cursorColor: Theme.of(context).colorScheme.secondary,
+              controller: _taskDescriptionController,
+              keyboardType: TextInputType.text,
+              minLines: 3,
+              maxLines: 5,
+              decoration: TextFieldDecorations().inputDecorationStyle(
+                  context, '', 'Enter your Task Description'),
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.1,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: MyButton(
+              textSize: textSize,
+              width: size.width * 0.85,
+              height: size.height * 0.08,
+              title: 'Update Task',
+              navigation: () {
+                if (_taskNameController.text.isNotEmpty) {
+                  // Update task in provider
+                  final todoProvider =
+                      Provider.of<TodoProvider>(context, listen: false);
+                  todoProvider.updateTask(
+                    widget.todo,
+                    _taskNameController.text,
+                    _taskDescriptionController.text,
+                  );
+                }
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: MyButton(
+              textSize: textSize,
+              width: size.width * 0.85,
+              height: size.height * 0.08,
+              title: 'Delete Task',
+              navigation: () {
+                final todoProvider =
+                    Provider.of<TodoProvider>(context, listen: false);
+                todoProvider.removeTodo(widget.index);
+                Navigator.pop(context);
+              },
+            ),
           ),
         ],
       ),

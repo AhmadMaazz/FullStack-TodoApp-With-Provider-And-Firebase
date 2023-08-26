@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         '/loginscreen': (context) => const LogInScreen(),
         '/homescreen': (context) => const HomeScreen(),
         '/addtaskscreen': (context) => const AddTaskScreen(),
-        '/tastdetailscreen': (context) => const TaskDetailScreen(),
+        // '/tastdetailscreen': (context) => const TaskDetailScreen(),
         '/logoutscreen': (context) => const LogoutScreen(),
       },
       initialRoute: '/',
