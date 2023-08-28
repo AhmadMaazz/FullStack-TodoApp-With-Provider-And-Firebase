@@ -9,7 +9,6 @@ import 'package:fullstack_todo_app/screens/login_screen.dart';
 import 'package:fullstack_todo_app/screens/logout_screen.dart';
 import 'package:fullstack_todo_app/screens/splash_screen.dart';
 import 'package:fullstack_todo_app/screens/start_screen.dart';
-import 'package:fullstack_todo_app/screens/taskdetails_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

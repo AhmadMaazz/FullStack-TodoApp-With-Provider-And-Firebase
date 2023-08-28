@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/firebase/firebase.utils.dart';
@@ -16,6 +17,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final User? user = Auth().currentUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserTasks();
+  }
+
+  Future<void> _fetchUserTasks() async {
+  if (user != null) {
+    Provider.of<TodoProvider>(context, listen: false)
+        .setUserTasks(user!.uid); // Pass userId here
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const CircleAvatar(
                     backgroundColor: Colors.pink,
                   ),
-                  title: Text('Hello! ${user?.displayName ?? 'User email'}'),
+                  title: Text('Hello! ${user?.email ?? 'User email'}'),
                 ),
               ),
               Positioned(
@@ -148,20 +163,3 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-// Text(
-//             user?.email ?? 'User email',
-//             style: const TextStyle(
-//               fontSize: 18,
-//               fontWeight: FontWeight.bold,
-//             ),
-//           ),
-//           ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: Colors.orange,
-//             ),
-//             onPressed: () async {
-//               await signOut();
-//               if (context.mounted) Navigator.pop(context);
-//             },
-//             child: const Text('sign out'),
-//           ),

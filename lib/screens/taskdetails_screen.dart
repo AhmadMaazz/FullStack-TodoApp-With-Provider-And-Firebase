@@ -17,8 +17,8 @@ class TaskDetailScreen extends StatefulWidget {
 }
 
 class _TaskDetailScreenState extends State<TaskDetailScreen> {
-  TextEditingController _taskNameController = TextEditingController();
-  TextEditingController _taskDescriptionController = TextEditingController();
+  final TextEditingController _taskNameController = TextEditingController();
+  final TextEditingController _taskDescriptionController = TextEditingController();
 
   @override
   void initState() {

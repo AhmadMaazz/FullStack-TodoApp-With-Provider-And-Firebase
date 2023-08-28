@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/models/todo.dart';
 import 'package:fullstack_todo_app/provider/todo_provider.dart';
@@ -6,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../decorations/textfield_decoration.dart';
+import '../firebase/firebase.utils.dart';
 import '../widgets/rps_custompainter.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -16,20 +19,29 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  final User? user = Auth().currentUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _taskName = TextEditingController();
   final TextEditingController _taskDescription = TextEditingController();
 
-  void _createNewTask() {
+  void _createNewTask() async {
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
-     final now = DateTime.now();
+    final now = DateTime.now();
     final formattedTime = DateFormat.jm().format(now);
     final newTodo = Todo(
       taskName: _taskName.text,
       description: _taskDescription.text,
       creationTime: formattedTime.toString(),
     );
-    todoProvider.addTodo(newTodo);
-    Navigator.pop(context);
+    if (Auth().currentUser != null) {
+      final userTasksRef = _firestore
+          .collection('users')
+          .doc(Auth().currentUser!.uid)
+          .collection('tasks');
+      await userTasksRef.add(newTodo.toJson());
+    }
+    // todoProvider.addTodo(newTodo);
+    
   }
 
   @override
