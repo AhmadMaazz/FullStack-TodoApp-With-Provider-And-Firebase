@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -25,20 +28,36 @@ class Auth extends ChangeNotifier {
     required String email,
     required String password,
     required String username,
+    required File? selectedImage,
   }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      if (selectedImage != null) {
+        final fileName = 'profile_pictures/${email}_${DateTime.now()}.jpg';
 
-      final User? user = currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'email': email,
-          'username': username,
-        });
+        final ref = firebase_storage.FirebaseStorage.instance.ref(fileName);
+        final uploadTask = ref.putFile(File(selectedImage.path));
+        final snapshot = await uploadTask;
+
+        if (snapshot.state == firebase_storage.TaskState.success) {
+          await _firebaseAuth.createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+          
+          final imageUrl = await ref.getDownloadURL();
+
+          final User? user = currentUser;
+          if (user != null) {
+            await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+              'email': email,
+              'username': username,
+              'profilePictureUrl': imageUrl,
+            });
+          }
+
+        }
       }
+
     } catch (e) {
       debugPrint('Error creating user: $e');
       rethrow;

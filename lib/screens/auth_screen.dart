@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:fullstack_todo_app/decorations/textfield_decoration.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,6 +20,8 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -32,6 +35,7 @@ class _AuthScreenState extends State<AuthScreen> {
         username: _fullNameController.text.toString(),
         email: _emailController.text.toString(),
         password: _passwordController.text.toString(),
+        selectedImage: _selectedImage,
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -243,7 +247,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     thickness: 1, // Increase thickness
                   ),
                   GestureDetector(
-                    onTap: ()  {
+                    onTap: () {
                       // await Auth().signInWithFacebook();
                       // Navigator.pushNamed(context, '/homescreen');
                       // Handle Facebook login
@@ -276,6 +280,17 @@ class _AuthScreenState extends State<AuthScreen> {
                   );
                   return; // Prevent navigation
                 }
+
+                // firebase_storage.Reference ref = firebase_storage
+                //     .FirebaseStorage.instance
+                //     .ref('/userprofilepic${DateTime.now()}');
+
+                // firebase_storage.UploadTask uploadTask =
+                //     ref.putFile(_selectedImage!.absolute);
+
+                // await Future.value(uploadTask);
+                // var newUrl = ref.getDownloadURL();
+
                 await createUserWithEmailAndPassword();
                 // Navigator.pushReplacementNamed(context, '/homescreen');
               },

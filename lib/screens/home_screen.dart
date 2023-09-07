@@ -16,7 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final User? user = Auth().currentUser;
+  final user = FirebaseAuth.instance.currentUser;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -25,12 +26,25 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchUserTasks();
   }
 
-  Future<void> _fetchUserTasks() async {
-  if (user != null) {
-    Provider.of<TodoProvider>(context, listen: false)
-        .setUserTasks(user!.uid); // Pass userId here
+  Future<Map<String, dynamic>> getUserData() async {
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid) // Use the user's UID to fetch their data
+          .get();
+
+      return userDoc.data() as Map<String, dynamic>;
+    } else {
+      throw Exception;
+    }
   }
-}
+
+  Future<void> _fetchUserTasks() async {
+    if (user != null) {
+      Provider.of<TodoProvider>(context, listen: false)
+          .setUserTasks(user!.uid); // Pass userId here
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +68,48 @@ class _HomeScreenState extends State<HomeScreen> {
                   painter: RPSCustomPainter(),
                 ),
               ),
-              Positioned(
-                left: size.width * 0.25,
-                right: size.width * 0.2,
-                top: size.height * 0.07,
-                child: ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.pink,
-                  ),
-                  title: Text('Hello! ${user?.email ?? 'User email'}'),
-                ),
+              // Positioned(
+              //   left: size.width * 0.25,
+              //   right: size.width * 0.2,
+              //   top: size.height * 0.07,
+              //   child: ListTile(
+              //     leading: const CircleAvatar(
+              //       backgroundColor: Colors.pink,
+              //     ),
+              //     title: Text('Hello! ${user?.displayName ?? 'User email'}'),
+              //   ),
+              // ),
+              FutureBuilder<Map<String, dynamic>>(
+                future: getUserData(), // Use the function to fetch user data
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // While waiting for data to be fetched, you can display a loading indicator
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    // Handle any errors that may occur
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // Once the data is fetched, use it to display the user's profile picture and name
+                    final userData = snapshot.data;
+                    final userProfilePictureURL =
+                        userData!['profilePictureUrl'];
+                    final userDisplayName = userData['username'];
+
+                    return Positioned(
+                      left: size.width * 0.25,
+                      right: size.width * 0.2,
+                      top: size.height * 0.07,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.pink,
+                          backgroundImage: NetworkImage(userProfilePictureURL),
+                        ),
+                        title:
+                            Text('Hello! ${userDisplayName ?? 'User email'}'),
+                      ),
+                    );
+                  }
+                },
               ),
               Positioned(
                 top: size.height * 0.075, // Adjust the top position as needed
@@ -160,6 +206,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-
