@@ -43,21 +43,22 @@ class Auth extends ChangeNotifier {
             email: email,
             password: password,
           );
-          
+
           final imageUrl = await ref.getDownloadURL();
 
           final User? user = currentUser;
           if (user != null) {
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .set({
               'email': email,
               'username': username,
               'profilePictureUrl': imageUrl,
             });
           }
-
         }
       }
-
     } catch (e) {
       debugPrint('Error creating user: $e');
       rethrow;
@@ -89,10 +90,12 @@ class Auth extends ChangeNotifier {
 
     final User user = userCredential.user!;
     final String username = user.displayName ?? '';
+    final String? profilePictureUrl = user.photoURL;
 
     await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
       'email': user.email,
       'username': username,
+      'profilePictureUrl': profilePictureUrl,
     });
 
     return userCredential;
