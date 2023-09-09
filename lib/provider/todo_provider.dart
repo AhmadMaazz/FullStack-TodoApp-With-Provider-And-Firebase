@@ -51,23 +51,35 @@ class TodoProvider extends ChangeNotifier {
     }
   }
 
-  void toggleTodoCompletion(int index) {
+  void toggleTodoCompletion(int index) async {
     _todos[index].isCompleted = !_todos[index].isCompleted;
     notifyListeners();
-  }
 
-  // void updateTask(Todo todo, String newTaskName, String newTaskDescription) {
-  //   final index = _todos.indexOf(todo);
-  //   if (index != -1) {
-  //     _todos[index] = Todo(
-  //       taskName: newTaskName,
-  //       description: newTaskDescription,
-  //       creationTime: todo.creationTime,
-  //       isCompleted: todo.isCompleted,
-  //     );
-  //     notifyListeners();
-  //   }
-  // }
+    final updatedTodo = _todos[index];
+    final user = Auth().currentUser;
+
+    if (user != null) {
+      final userTasksRef =
+          _firestore.collection('users').doc(user.uid).collection('tasks');
+
+      final tasksSnapshot = await userTasksRef.get();
+
+      // Find the Firestore-generated document ID of the task to update
+      final taskToUpdate = tasksSnapshot.docs.firstWhere(
+        (doc) =>
+            doc['taskName'] == updatedTodo.taskName &&
+            doc['description'] == updatedTodo.description &&
+            doc['creationTime'] == updatedTodo.creationTime,
+      );
+
+      final taskId = taskToUpdate.id;
+
+      // Update the task in Firestore
+      await userTasksRef.doc(taskId).update({
+        'isCompleted': updatedTodo.isCompleted,
+      });
+    }
+  }
 
   void updateTask(
       Todo todo, String newTaskName, String newTaskDescription) async {

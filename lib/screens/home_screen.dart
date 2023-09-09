@@ -87,7 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     // Handle any errors that may occur
-                    return Text('Error: ${snapshot.error}');
+                    // return Text('Error: ${snapshot.error}');
+                    return const AlertDialog(
+                      title: Text('Error Fetching User Data'),
+                    );
                   } else {
                     // Once the data is fetched, use it to display the user's profile picture and name
                     final userData = snapshot.data;

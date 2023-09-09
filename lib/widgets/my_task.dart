@@ -50,11 +50,17 @@ class MyTasks extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: ListTile(
-              leading: Checkbox(
-                value: todo.isCompleted,
-                onChanged: (_) {
-                  todoProvider.toggleTodoCompletion(index);
-                },
+              leading: Transform.scale(
+                scale: 1.2,
+                child: Checkbox(
+                  activeColor: Theme.of(context).colorScheme.secondary,
+                  checkColor: Colors.black,
+                  shape: const CircleBorder(),
+                  value: todo.isCompleted,
+                  onChanged: (_) {
+                    todoProvider.toggleTodoCompletion(index);
+                  },
+                ),
               ),
               title: Text(
                 todoProvider.todos[index].taskName,
@@ -81,7 +87,10 @@ class MyTasks extends StatelessWidget {
                     ),
                   );
                 },
-                icon: const Icon(Icons.edit),
+                icon: Icon(
+                  Icons.edit,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ),
